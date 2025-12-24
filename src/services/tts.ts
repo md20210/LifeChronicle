@@ -4,7 +4,6 @@
 
 class TextToSpeechService {
   private synth: SpeechSynthesis;
-  private currentUtterance: SpeechSynthesisUtterance | null = null;
 
   constructor() {
     this.synth = window.speechSynthesis;
@@ -23,7 +22,6 @@ class TextToSpeechService {
     utterance.pitch = 1.0; // Normal pitch
     utterance.volume = 1.0; // Full volume
 
-    this.currentUtterance = utterance;
     this.synth.speak(utterance);
   }
 
@@ -34,7 +32,6 @@ class TextToSpeechService {
     if (this.synth.speaking) {
       this.synth.cancel();
     }
-    this.currentUtterance = null;
   }
 
   /**
