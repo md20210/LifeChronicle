@@ -204,19 +204,20 @@ function App() {
               </p>
             </div>
           ) : (
-            <div className="relative pl-8">
-              {/* Vertical Timeline Line */}
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
+            <div className="relative">
+              {/* Timeline Container with left border acting as vertical line */}
+              <div className="border-l-4 border-gradient pl-12 space-y-8" style={{
+                borderImageSource: 'linear-gradient(to bottom, #3b82f6, #a855f7, #ec4899)',
+                borderImageSlice: 1
+              }}>
+                {/* Timeline Arrow at Top */}
+                <div className="absolute left-0 -top-3 w-0 h-0 border-l-[8px] border-r-[8px] border-b-[16px] border-l-transparent border-r-transparent border-b-blue-500 transform -translate-x-[6px]"></div>
 
-              {/* Timeline Arrow at Top */}
-              <div className="absolute left-0 top-0 w-0 h-0 border-l-[4px] border-r-[4px] border-b-[12px] border-l-transparent border-r-transparent border-b-blue-500 transform -translate-x-[3.5px] -translate-y-3"></div>
-
-              {/* Timeline Entries */}
-              <div className="space-y-6">
+                {/* Timeline Entries */}
                 {entries.map((entry) => (
                   <div key={entry.id} className="relative">
                     {/* Timeline Dot */}
-                    <div className="absolute -left-8 top-4 w-4 h-4 rounded-full bg-white border-4 border-blue-600 shadow-lg"></div>
+                    <div className="absolute -left-[52px] top-4 w-5 h-5 rounded-full bg-blue-600 border-4 border-white shadow-lg ring-2 ring-blue-200"></div>
 
                     {/* Entry Content */}
                     <TimelineEntry
