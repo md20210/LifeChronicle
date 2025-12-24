@@ -189,8 +189,8 @@ function App() {
         )}
 
         {/* Timeline */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             📅 Meine Timeline ({entries.length})
           </h2>
 
@@ -204,14 +204,30 @@ function App() {
               </p>
             </div>
           ) : (
-            entries.map((entry) => (
-              <TimelineEntry
-                key={entry.id}
-                entry={entry}
-                onDelete={handleDelete}
-                onProcess={handleProcess}
-              />
-            ))
+            <div className="relative pl-8">
+              {/* Vertical Timeline Line */}
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
+
+              {/* Timeline Arrow at Top */}
+              <div className="absolute left-0 top-0 w-0 h-0 border-l-[4px] border-r-[4px] border-b-[12px] border-l-transparent border-r-transparent border-b-blue-500 transform -translate-x-[3.5px] -translate-y-3"></div>
+
+              {/* Timeline Entries */}
+              <div className="space-y-6">
+                {entries.map((entry) => (
+                  <div key={entry.id} className="relative">
+                    {/* Timeline Dot */}
+                    <div className="absolute -left-8 top-4 w-4 h-4 rounded-full bg-white border-4 border-blue-600 shadow-lg"></div>
+
+                    {/* Entry Content */}
+                    <TimelineEntry
+                      entry={entry}
+                      onDelete={handleDelete}
+                      onProcess={handleProcess}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
 
