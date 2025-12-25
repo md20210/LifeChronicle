@@ -189,7 +189,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto" style={{ paddingLeft: '25px', paddingRight: '25px' }}>
         {/* Header */}
         <header className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="flex justify-between items-center">
