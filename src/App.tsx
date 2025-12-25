@@ -207,23 +207,23 @@ function App() {
               <LanguageToggle />
 
               {/* LLM Toggle */}
-              <div className="inline-flex gap-2 bg-gray-100 p-1 rounded-lg">
+              <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
                 <button
                   onClick={() => setLlmType('ollama')}
-                  className={`px-4 py-2 rounded font-medium transition-all border-0 ${
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
                     llmType === 'ollama'
                       ? 'bg-white text-teal-600 shadow-sm'
-                      : 'bg-transparent text-gray-600 hover:text-gray-900'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   {t('lifechonicle_llm_toggle_local')}
                 </button>
                 <button
                   onClick={() => setLlmType('grok')}
-                  className={`px-4 py-2 rounded font-medium transition-all border-0 ${
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
                     llmType === 'grok'
                       ? 'bg-white text-teal-600 shadow-sm'
-                      : 'bg-transparent text-gray-600 hover:text-gray-900'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   {t('lifechonicle_llm_toggle_grok')}
