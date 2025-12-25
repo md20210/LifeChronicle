@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { TimelineEntry as TimelineEntryType } from '../types';
 import { ttsService } from '../services/tts';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface TimelineEntryProps {
   entry: TimelineEntryType;
@@ -9,6 +10,7 @@ interface TimelineEntryProps {
 }
 
 const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, onDelete, onProcess }) => {
+  const { t } = useLanguage();
   const [showFull, setShowFull] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -48,7 +50,7 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, onDelete, onProces
   };
 
   const handleDelete = () => {
-    if (confirm('Möchten Sie diesen Eintrag wirklich löschen?')) {
+    if (confirm(t('lifechonicle_confirm_delete'))) {
       onDelete(entry.id);
     }
   };
@@ -88,7 +90,7 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, onDelete, onProces
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600'
             }`}
-            title="Vorlesen"
+            title={t('lifechonicle_btn_speak')}
           >
             {isSpeaking ? '⏸️' : '🔊'}
           </button>
@@ -97,7 +99,7 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, onDelete, onProces
             <button
               onClick={() => onProcess(entry.id)}
               className="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-all"
-              title="Mit LLM überarbeiten"
+              title={t('lifechonicle_btn_process')}
             >
               ✨
             </button>
@@ -106,7 +108,7 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, onDelete, onProces
           <button
             onClick={handleDelete}
             className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-all"
-            title="Löschen"
+            title={t('lifechonicle_btn_delete')}
           >
             🗑️
           </button>
@@ -124,7 +126,7 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, onDelete, onProces
             onClick={() => setShowFull(!showFull)}
             className="mt-2 text-blue-600 hover:text-blue-700 font-medium text-sm"
           >
-            {showFull ? '👁️ Weniger anzeigen' : '👁️ Volltext anzeigen'}
+            {showFull ? t('lifechonicle_btn_show_less') : t('lifechonicle_btn_show_more')}
           </button>
         )}
       </div>
