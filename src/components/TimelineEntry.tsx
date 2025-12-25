@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 interface TimelineEntryProps {
   entry: TimelineEntryType;
   formattedDate: string; // e.g., "Juni 1985"
-  color: { bg: string; border: string; text: string; dot: string };
+  color: { bgColor: string; borderColor: string; textColor: string; dotColor: string };
   onDelete: (id: string) => void;
   onProcess: (id: string) => void;
 }
@@ -42,7 +42,7 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, formattedDate, col
     <div>
       {/* Line 1: Year + Title (Date) */}
       <div className="flex justify-between items-start mb-2">
-        <h3 className={`text-xl font-bold ${color.text}`}>
+        <h3 className="text-xl font-bold" style={{ color: color.textColor }}>
           {year} {entry.title} <span className="text-base font-normal text-gray-600">({formattedDate})</span>
         </h3>
 

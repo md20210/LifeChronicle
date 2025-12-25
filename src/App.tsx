@@ -5,14 +5,14 @@ import { lifeChronicleApi } from './services/api';
 import type { TimelineEntry as TimelineEntryType } from './types';
 import { useLanguage } from './contexts/LanguageContext';
 
-// Color palette for timeline entries (like in the image)
+// Color palette for timeline entries (like in timeline.jpg)
 const COLORS = [
-  { bg: 'bg-purple-100', border: 'border-purple-300', text: 'text-purple-900', dot: 'bg-purple-500' },
-  { bg: 'bg-teal-100', border: 'border-teal-300', text: 'text-teal-900', dot: 'bg-teal-500' },
-  { bg: 'bg-green-100', border: 'border-green-300', text: 'text-green-900', dot: 'bg-green-500' },
-  { bg: 'bg-yellow-100', border: 'border-yellow-300', text: 'text-yellow-900', dot: 'bg-yellow-500' },
-  { bg: 'bg-orange-100', border: 'border-orange-300', text: 'text-orange-900', dot: 'bg-orange-500' },
-  { bg: 'bg-pink-100', border: 'border-pink-300', text: 'text-pink-900', dot: 'bg-pink-500' },
+  { bgColor: '#e9d5ff', borderColor: '#c084fc', textColor: '#581c87', dotColor: '#9333ea' }, // Purple
+  { bgColor: '#ccfbf1', borderColor: '#5eead4', textColor: '#134e4a', dotColor: '#14b8a6' }, // Teal
+  { bgColor: '#d1fae5', borderColor: '#6ee7b7', textColor: '#065f46', dotColor: '#10b981' }, // Green
+  { bgColor: '#fef3c7', borderColor: '#fcd34d', textColor: '#78350f', dotColor: '#f59e0b' }, // Yellow
+  { bgColor: '#fed7aa', borderColor: '#fdba74', textColor: '#7c2d12', dotColor: '#f97316' }, // Orange
+  { bgColor: '#fce7f3', borderColor: '#f9a8d4', textColor: '#831843', dotColor: '#ec4899' }, // Pink
 ];
 
 function App() {
@@ -207,23 +207,23 @@ function App() {
               <LanguageToggle />
 
               {/* LLM Toggle */}
-              <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+              <div className="inline-flex gap-2 bg-gray-100 p-1 rounded-lg">
                 <button
                   onClick={() => setLlmType('ollama')}
-                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                  className={`px-4 py-2 rounded font-medium transition-all border-0 ${
                     llmType === 'ollama'
                       ? 'bg-white text-teal-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      : 'bg-transparent text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   {t('lifechonicle_llm_toggle_local')}
                 </button>
                 <button
                   onClick={() => setLlmType('grok')}
-                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                  className={`px-4 py-2 rounded font-medium transition-all border-0 ${
                     llmType === 'grok'
                       ? 'bg-white text-teal-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      : 'bg-transparent text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   {t('lifechonicle_llm_toggle_grok')}
@@ -359,8 +359,17 @@ function App() {
             </div>
           ) : (
             <div className="relative max-w-5xl mx-auto">
-              {/* Central Timeline Line (thick, 10px) */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-[10px] bg-gray-300 rounded-full"></div>
+              {/* Central Timeline Line (thick, 10px) - SEHR SICHTBAR */}
+              <div
+                className="absolute top-0 bottom-0 rounded-full"
+                style={{
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '10px',
+                  backgroundColor: '#d1d5db',
+                  zIndex: 1
+                }}
+              ></div>
 
               {/* Timeline Entries - Alternating left/right */}
               <div className="space-y-20">
@@ -376,26 +385,40 @@ function App() {
 
                   return (
                     <div key={entry.id} className="relative">
-                      {/* Large Year Circle on the center line */}
+                      {/* Large Year Circle on the center line - SEHR GROSS UND BUNT */}
                       <div
-                        className={`absolute left-1/2 transform -translate-x-1/2 -top-4 w-24 h-24 ${color.dot} rounded-full flex items-center justify-center shadow-lg z-10`}
+                        className="absolute flex items-center justify-center rounded-full shadow-xl font-bold"
+                        style={{
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          top: '-16px',
+                          width: '100px',
+                          height: '100px',
+                          backgroundColor: color.dotColor,
+                          color: 'white',
+                          fontSize: '2rem',
+                          zIndex: 10,
+                          border: '4px solid white'
+                        }}
                       >
-                        <span className="text-white text-3xl font-bold">
-                          {getYearFromDate(entry.date)}
-                        </span>
+                        {getYearFromDate(entry.date)}
                       </div>
 
                       {/* Entry Card - Left or Right */}
-                      <div className={`relative ${isLeft ? 'pr-[55%]' : 'pl-[55%]'} pt-16`}>
-                        <div className={`${color.bg} ${color.border} border-2 rounded-xl p-6 shadow-lg relative`}>
+                      <div className={`relative ${isLeft ? 'pr-[55%]' : 'pl-[55%]'} pt-20`}>
+                        <div
+                          className="rounded-xl p-6 shadow-lg relative"
+                          style={{
+                            backgroundColor: color.bgColor,
+                            border: `2px solid ${color.borderColor}`
+                          }}
+                        >
                           {/* Arrow pointing to center line */}
                           <div
-                            className={`absolute top-8 ${
-                              isLeft
-                                ? 'right-0 translate-x-full border-l-white'
-                                : 'left-0 -translate-x-full border-r-white'
-                            }`}
+                            className="absolute"
                             style={{
+                              top: '40px',
+                              [isLeft ? 'right' : 'left']: '-30px',
                               width: 0,
                               height: 0,
                               borderTop: '15px solid transparent',
@@ -433,7 +456,7 @@ function App() {
             >
               General Backend
             </a>{' '}
-            • {t('lifechonicle_footer_privacy')}
+            • {t('lifechonicle_footer_local_gdpr')}
           </p>
         </footer>
       </div>
