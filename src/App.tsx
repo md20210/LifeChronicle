@@ -207,10 +207,10 @@ function App() {
               <LanguageToggle />
 
               {/* LLM Toggle */}
-              <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
+              <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
                 <button
                   onClick={() => setLlmType('ollama')}
-                  className={`px-3 py-2 rounded-md font-medium transition-all text-sm ${
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
                     llmType === 'ollama'
                       ? 'bg-white text-teal-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
@@ -220,7 +220,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => setLlmType('grok')}
-                  className={`px-3 py-2 rounded-md font-medium transition-all text-sm ${
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
                     llmType === 'grok'
                       ? 'bg-white text-teal-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
@@ -232,7 +232,7 @@ function App() {
 
               <button
                 onClick={handleExportPDF}
-                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-sm text-sm"
+                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-sm"
               >
                 📖 {t('lifechonicle_btn_export_pdf')}
               </button>
