@@ -455,11 +455,10 @@ function App() {
                 <span className="text-6xl">📖</span>
               </div>
               <h2 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-3">
-                Deine Lebensgeschichte als Buch
+                Weiterführend
               </h2>
               <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-                Exportiere deine Timeline als professionell formatiertes PDF-Dokument
-                mit allen Farben, Bildern und literarischen Texten.
+                Exportiere deine Timeline als professionell formatiertes PDF-Dokument.
               </p>
             </div>
 
