@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import TimelineEntry from './components/TimelineEntry';
+import { LanguageToggle } from './components/LanguageToggle';
 import { lifeChronicleApi } from './services/api';
 import type { TimelineEntry as TimelineEntryType } from './types';
 import { useLanguage } from './contexts/LanguageContext';
@@ -15,7 +16,7 @@ const COLORS = [
 ];
 
 function App() {
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const [llmType, setLlmType] = useState<'ollama' | 'grok'>('ollama');
   const [entries, setEntries] = useState<TimelineEntryType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -203,27 +204,13 @@ function App() {
 
             <div className="flex items-center gap-4">
               {/* Language Toggle */}
-              <div className="flex items-center gap-2">
-                {['de', 'en', 'es'].map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => setLanguage(lang as 'de' | 'en' | 'es')}
-                    className={`px-3 py-1 rounded text-sm font-medium transition-all ${
-                      language === lang
-                        ? 'bg-teal-600 text-white shadow-md'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    }`}
-                  >
-                    {lang.toUpperCase()}
-                  </button>
-                ))}
-              </div>
+              <LanguageToggle />
 
               {/* LLM Toggle */}
-              <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+              <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
                 <button
                   onClick={() => setLlmType('ollama')}
-                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                  className={`px-3 py-2 rounded-md font-medium transition-all text-sm ${
                     llmType === 'ollama'
                       ? 'bg-white text-teal-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
@@ -233,7 +220,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => setLlmType('grok')}
-                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                  className={`px-3 py-2 rounded-md font-medium transition-all text-sm ${
                     llmType === 'grok'
                       ? 'bg-white text-teal-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
@@ -245,7 +232,7 @@ function App() {
 
               <button
                 onClick={handleExportPDF}
-                className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-md"
+                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-sm text-sm"
               >
                 📖 {t('lifechonicle_btn_export_pdf')}
               </button>
@@ -257,7 +244,7 @@ function App() {
         <div className="text-center mb-8">
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-8 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 font-medium transition-all shadow-md text-lg"
+            className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-sm"
           >
             ➕ {t('lifechonicle_btn_new_entry')}
           </button>
@@ -335,7 +322,7 @@ function App() {
               <div className="flex gap-3">
                 <button
                   onClick={handleCreate}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all"
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all shadow-sm"
                 >
                   ✅ {t('lifechonicle_btn_save')}
                 </button>
@@ -346,7 +333,7 @@ function App() {
                     setNewDate('');
                     setNewText('');
                   }}
-                  className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 font-medium transition-all"
+                  className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition-all shadow-sm"
                 >
                   ❌ {t('lifechonicle_btn_cancel')}
                 </button>
