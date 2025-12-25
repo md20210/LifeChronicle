@@ -9,9 +9,10 @@ interface TimelineEntryProps {
   color: { bgColor: string; borderColor: string; textColor: string; dotColor: string };
   onDelete: (id: string) => void;
   onProcess: (id: string) => void;
+  isProcessing?: boolean;
 }
 
-const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, formattedDate, color, onDelete, onProcess }) => {
+const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, formattedDate, color, onDelete, onProcess, isProcessing = false }) => {
   const { t } = useLanguage();
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -61,10 +62,19 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, formattedDate, col
           {entry.status === 'pending' && (
             <button
               onClick={() => onProcess(entry.id)}
-              className="p-1 text-sm text-purple-500 hover:text-purple-700 transition-all"
-              title={t('lifechonicle_action_process')}
+              disabled={isProcessing}
+              className={`p-1 text-sm transition-all ${
+                isProcessing
+                  ? 'text-gray-400 cursor-wait'
+                  : 'text-purple-500 hover:text-purple-700'
+              }`}
+              title={isProcessing ? t('lifechonicle_action_processing') : t('lifechonicle_action_process')}
             >
-              ✨
+              {isProcessing ? (
+                <span className="inline-block animate-spin">⏳</span>
+              ) : (
+                '✨'
+              )}
             </button>
           )}
 

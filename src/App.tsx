@@ -25,6 +25,7 @@ function App() {
   const [newText, setNewText] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
     loadEntries();
@@ -89,6 +90,7 @@ function App() {
 
   const handleProcess = async (id: string) => {
     try {
+      setProcessingId(id); // Show loading spinner
       console.log('Processing entry:', id, 'with provider:', llmType);
       const result = await lifeChronicleApi.processEntry(id, llmType);
       console.log('Process result:', result);
@@ -97,6 +99,8 @@ function App() {
       console.error('Failed to process entry:', error);
       console.error('Error response:', error.response?.data);
       alert(t('lifechonicle_alert_process_error', { error: error.response?.data?.detail || error.message }));
+    } finally {
+      setProcessingId(null); // Hide loading spinner
     }
   };
 
@@ -437,6 +441,7 @@ function App() {
                             color={color}
                             onDelete={handleDelete}
                             onProcess={handleProcess}
+                            isProcessing={processingId === entry.id}
                           />
                         </div>
                       </div>
