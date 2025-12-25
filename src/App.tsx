@@ -184,8 +184,8 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-6 sm:px-8 lg:px-12">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-6xl mx-auto px-8 sm:px-12 lg:px-16">
         {/* Header */}
         <header className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="flex justify-between items-center">
