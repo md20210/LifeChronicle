@@ -185,7 +185,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-6xl mx-auto px-8 sm:px-12 lg:px-16">
+      <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
         <header className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="flex justify-between items-center">
@@ -240,8 +240,8 @@ function App() {
           </div>
         </header>
 
-        {/* Add Entry Button - Centered */}
-        <div className="text-center mb-8">
+        {/* Add Entry Button - Left aligned */}
+        <div className="mb-8">
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-sm"
