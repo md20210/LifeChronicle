@@ -361,13 +361,16 @@ function App() {
             <div className="relative max-w-5xl mx-auto">
               {/* Central Timeline Line (thick, 10px) - SEHR SICHTBAR */}
               <div
-                className="absolute top-0 bottom-0 rounded-full"
                 style={{
+                  position: 'absolute',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  width: '10px',
-                  backgroundColor: '#d1d5db',
-                  zIndex: 1
+                  top: 0,
+                  bottom: 0,
+                  width: '12px',
+                  backgroundColor: '#9ca3af',
+                  borderRadius: '6px',
+                  zIndex: 5
                 }}
               ></div>
 
@@ -413,17 +416,18 @@ function App() {
                             border: `2px solid ${color.borderColor}`
                           }}
                         >
-                          {/* Arrow pointing to center line */}
+                          {/* Arrow pointing to center line - SAME COLOR AS BOX */}
                           <div
-                            className="absolute"
                             style={{
+                              position: 'absolute',
                               top: '40px',
                               [isLeft ? 'right' : 'left']: '-30px',
                               width: 0,
                               height: 0,
                               borderTop: '15px solid transparent',
                               borderBottom: '15px solid transparent',
-                              [isLeft ? 'borderLeft' : 'borderRight']: '30px solid white',
+                              [isLeft ? 'borderLeft' : 'borderRight']: `30px solid ${color.bgColor}`,
+                              zIndex: 8
                             }}
                           ></div>
 
