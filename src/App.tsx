@@ -88,8 +88,8 @@ function App() {
 
   const handleProcess = async (id: string) => {
     try {
-      console.log('Processing entry:', id);
-      const result = await lifeChronicleApi.processEntry(id);
+      console.log('Processing entry:', id, 'with provider:', llmType);
+      const result = await lifeChronicleApi.processEntry(id, llmType);
       console.log('Process result:', result);
       await loadEntries();
     } catch (error: any) {
