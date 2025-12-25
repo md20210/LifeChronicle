@@ -53,14 +53,30 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
         }
 
         // Add cache-busting timestamp to always get fresh translations
-        const response = await api.get(`/translations/${language}?t=${Date.now()}`);
+        // Use shorter timeout to prevent hanging
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+        const response = await api.get(`/translations/${language}?t=${Date.now()}`, {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
         setTranslations(response.data.translations);
       } catch (error) {
         console.error('Failed to load translations:', error);
-        // Fallback to minimal hardcoded translations
+        // Fallback to minimal German translations
         setTranslations({
           lifechonicle_app_title: 'LifeChronicle',
-          error: 'Error loading translations'
+          lifechonicle_app_subtitle: 'Meine Lebensgeschichte - lokal & DSGVO-konform',
+          lifechonicle_loading: 'Lädt...',
+          lifechonicle_llm_toggle_local: '🏠 Lokal (DSGVO)',
+          lifechonicle_llm_toggle_grok: '⚡ GROK (nicht DSGVO)',
+          lifechonicle_btn_export_pdf: 'PDF Export',
+          lifechonicle_btn_new_entry: 'Neuer Eintrag',
+          lifechonicle_timeline_title: 'Zeitleiste ({count})',
+          lifechonicle_empty_state: 'Noch keine Einträge vorhanden',
+          lifechonicle_empty_hint: 'Klicke auf "Neuer Eintrag", um deine erste Lebensgeschichte zu erzählen!',
+          error: 'Backend nicht erreichbar - Offline-Modus'
         });
       } finally {
         setLoading(false);
