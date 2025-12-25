@@ -344,7 +344,7 @@ function App() {
 
         {/* Timeline */}
         <div>
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-12 text-center">
             📅 {t('lifechonicle_timeline_title', { count: entries.length })}
           </h2>
 
@@ -358,14 +358,15 @@ function App() {
               </p>
             </div>
           ) : (
-            <div className="relative pl-16">
-              {/* Vertical Timeline Line */}
-              <div className="absolute left-12 top-0 bottom-0 w-1 bg-gradient-to-b from-teal-400 via-teal-500 to-teal-600"></div>
+            <div className="relative max-w-5xl mx-auto">
+              {/* Central Timeline Line (thick, 10px) */}
+              <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-[10px] bg-gray-300 rounded-full"></div>
 
-              {/* Timeline Entries */}
-              <div className="space-y-8">
+              {/* Timeline Entries - Alternating left/right */}
+              <div className="space-y-20">
                 {entries.map((entry, index) => {
                   const color = COLORS[index % COLORS.length];
+                  const isLeft = index % 2 === 0;
 
                   // Format date for display (e.g., "Juni 1985")
                   const formattedDate = new Date(entry.date).toLocaleDateString(
@@ -375,25 +376,42 @@ function App() {
 
                   return (
                     <div key={entry.id} className="relative">
-                      {/* Year Label on left */}
-                      <div className="absolute -left-16 top-0 w-12 text-right">
-                        <span className="inline-block px-2 py-1 bg-teal-500 text-white font-bold rounded text-sm shadow-md">
+                      {/* Large Year Circle on the center line */}
+                      <div
+                        className={`absolute left-1/2 transform -translate-x-1/2 -top-4 w-24 h-24 ${color.dot} rounded-full flex items-center justify-center shadow-lg z-10`}
+                      >
+                        <span className="text-white text-3xl font-bold">
                           {getYearFromDate(entry.date)}
                         </span>
                       </div>
 
-                      {/* Timeline Dot */}
-                      <div className={`absolute -left-[50px] top-2 w-4 h-4 rounded-full ${color.dot} border-2 border-white shadow-lg`}></div>
+                      {/* Entry Card - Left or Right */}
+                      <div className={`relative ${isLeft ? 'pr-[55%]' : 'pl-[55%]'} pt-16`}>
+                        <div className={`${color.bg} ${color.border} border-2 rounded-xl p-6 shadow-lg relative`}>
+                          {/* Arrow pointing to center line */}
+                          <div
+                            className={`absolute top-8 ${
+                              isLeft
+                                ? 'right-0 translate-x-full border-l-white'
+                                : 'left-0 -translate-x-full border-r-white'
+                            }`}
+                            style={{
+                              width: 0,
+                              height: 0,
+                              borderTop: '15px solid transparent',
+                              borderBottom: '15px solid transparent',
+                              [isLeft ? 'borderLeft' : 'borderRight']: '30px solid white',
+                            }}
+                          ></div>
 
-                      {/* Entry Card - Simplified to 2 lines */}
-                      <div className={`${color.bg} ${color.border} border-2 rounded-xl p-4 shadow-md`}>
-                        <TimelineEntry
-                          entry={entry}
-                          formattedDate={formattedDate}
-                          color={color}
-                          onDelete={handleDelete}
-                          onProcess={handleProcess}
-                        />
+                          <TimelineEntry
+                            entry={entry}
+                            formattedDate={formattedDate}
+                            color={color}
+                            onDelete={handleDelete}
+                            onProcess={handleProcess}
+                          />
+                        </div>
                       </div>
                     </div>
                   );
