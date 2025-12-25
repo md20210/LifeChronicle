@@ -16,7 +16,7 @@ const COLORS = [
 
 function App() {
   const { t, language, setLanguage } = useLanguage();
-  const [llmType, setLlmType] = useState<'ollama' | 'anthropic'>('ollama');
+  const [llmType, setLlmType] = useState<'ollama' | 'grok'>('ollama');
   const [entries, setEntries] = useState<TimelineEntryType[]>([]);
   const [loading, setLoading] = useState(true);
   const [newTitle, setNewTitle] = useState('');
@@ -232,14 +232,14 @@ function App() {
                   {t('lifechonicle_llm_toggle_local')}
                 </button>
                 <button
-                  onClick={() => setLlmType('anthropic')}
+                  onClick={() => setLlmType('grok')}
                   className={`px-4 py-2 rounded-md font-medium transition-all ${
-                    llmType === 'anthropic'
+                    llmType === 'grok'
                       ? 'bg-white text-teal-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  {t('lifechonicle_llm_toggle_anthropic')}
+                  {t('lifechonicle_llm_toggle_grok')}
                 </button>
               </div>
 
@@ -380,9 +380,15 @@ function App() {
                 {entries.map((entry, index) => {
                   const color = COLORS[index % COLORS.length];
 
+                  // Format date for display (e.g., "Juni 1985")
+                  const formattedDate = new Date(entry.date).toLocaleDateString(
+                    language === 'de' ? 'de-DE' : language === 'es' ? 'es-ES' : 'en-US',
+                    { month: 'long', year: 'numeric' }
+                  );
+
                   return (
                     <div key={entry.id} className="relative">
-                      {/* Year Label */}
+                      {/* Year Label on left */}
                       <div className="absolute -left-16 top-0 w-12 text-right">
                         <span className="inline-block px-2 py-1 bg-teal-500 text-white font-bold rounded text-sm shadow-md">
                           {getYearFromDate(entry.date)}
@@ -390,27 +396,14 @@ function App() {
                       </div>
 
                       {/* Timeline Dot */}
-                      <div className={`absolute -left-[50px] top-4 w-4 h-4 rounded-full ${color.dot} border-2 border-white shadow-lg`}></div>
+                      <div className={`absolute -left-[50px] top-2 w-4 h-4 rounded-full ${color.dot} border-2 border-white shadow-lg`}></div>
 
-                      {/* Entry Card */}
-                      <div className={`${color.bg} ${color.border} border-2 rounded-xl p-5 shadow-md`}>
-                        {/* Year + Title Header */}
-                        <div className="mb-4">
-                          <h3 className={`text-2xl font-bold ${color.text} mb-1`}>
-                            {getYearFromDate(entry.date)} {entry.title}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {new Date(entry.date).toLocaleDateString(language === 'de' ? 'de-DE' : language === 'es' ? 'es-ES' : 'en-US', {
-                              day: '2-digit',
-                              month: 'long',
-                              year: 'numeric'
-                            })}
-                          </p>
-                        </div>
-
-                        {/* Entry Component */}
+                      {/* Entry Card - Simplified to 2 lines */}
+                      <div className={`${color.bg} ${color.border} border-2 rounded-xl p-4 shadow-md`}>
                         <TimelineEntry
                           entry={entry}
+                          formattedDate={formattedDate}
+                          color={color}
                           onDelete={handleDelete}
                           onProcess={handleProcess}
                         />

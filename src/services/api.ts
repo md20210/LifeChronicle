@@ -29,7 +29,7 @@ export const lifeChronicleApi = {
   },
 
   // Process entry with LLM (convert to book chapter)
-  processEntry: async (entryId: string, provider: 'ollama' | 'anthropic' = 'ollama'): Promise<TimelineEntry> => {
+  processEntry: async (entryId: string, provider: 'ollama' | 'grok' = 'ollama'): Promise<TimelineEntry> => {
     const response = await api.post(`/lifechonicle/entries/${entryId}/process`, { provider });
     return response.data.entry;
   },

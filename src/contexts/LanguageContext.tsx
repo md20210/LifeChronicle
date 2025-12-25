@@ -27,18 +27,15 @@ interface LanguageProviderProps {
  * Wraps the app and provides language context to all children
  */
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  // Get initial language from localStorage or browser, default to 'de'
+  // Get initial language from localStorage, default to German (like other projects)
   const getInitialLanguage = (): Language => {
     const stored = localStorage.getItem('lifechonicle_language');
     if (stored && ['de', 'en', 'es'].includes(stored)) {
       return stored as Language;
     }
 
-    // Detect browser language
-    const browserLang = navigator.language.toLowerCase();
-    if (browserLang.startsWith('de')) return 'de';
-    if (browserLang.startsWith('es')) return 'es';
-    return 'en';
+    // Default to German (DSGVO-compliant, matches other projects)
+    return 'de';
   };
 
   const [language, setLanguageState] = useState<Language>(getInitialLanguage());
