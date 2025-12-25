@@ -233,13 +233,6 @@ function App() {
                   {t('lifechonicle_llm_toggle_grok')}
                 </button>
               </div>
-
-              <button
-                onClick={handleExportPDF}
-                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-sm"
-              >
-                📖 {t('lifechonicle_btn_export_pdf')}
-              </button>
             </div>
           </div>
         </header>
@@ -454,6 +447,63 @@ function App() {
         </div>
 
         {/* Footer */}
+        {/* PDF Export Section */}
+        {entries.length > 0 && (
+          <section className="mt-16 bg-gradient-to-br from-teal-50 via-emerald-50 to-cyan-50 rounded-2xl p-10 border-2 border-teal-200 shadow-xl">
+            <div className="text-center mb-8">
+              <div className="inline-block p-4 bg-white rounded-full shadow-lg mb-4">
+                <span className="text-6xl">📖</span>
+              </div>
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-3">
+                Deine Lebensgeschichte als Buch
+              </h2>
+              <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+                Exportiere deine Timeline als professionell formatiertes PDF-Dokument
+                mit allen Farben, Bildern und literarischen Texten.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-purple-500 hover:shadow-lg transition-all">
+                <div className="text-3xl mb-3">🎨</div>
+                <h3 className="text-lg font-bold text-gray-800 mb-2">Farbige Timeline</h3>
+                <p className="text-sm text-gray-600">
+                  Alle Timeline-Farben und -Pfeile werden im PDF übernommen
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-teal-500 hover:shadow-lg transition-all">
+                <div className="text-3xl mb-3">✨</div>
+                <h3 className="text-lg font-bold text-gray-800 mb-2">LLM-Texte</h3>
+                <p className="text-sm text-gray-600">
+                  Literarisch überarbeitete Kapitel von deinem gewählten LLM
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-amber-500 hover:shadow-lg transition-all">
+                <div className="text-3xl mb-3">📄</div>
+                <h3 className="text-lg font-bold text-gray-800 mb-2">Professionelles Layout</h3>
+                <p className="text-sm text-gray-600">
+                  Schön formatiert mit Inhaltsverzeichnis und Kapiteln
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <button
+                onClick={handleExportPDF}
+                className="px-10 py-5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-xl font-bold rounded-xl hover:from-teal-700 hover:to-emerald-700 transition-all shadow-2xl hover:shadow-3xl transform hover:scale-105 flex items-center gap-3"
+              >
+                <span className="text-3xl">📖</span>
+                PDF-Buch herunterladen
+                <span className="text-sm bg-white/20 px-3 py-1 rounded-full">
+                  {entries.length} Kapitel
+                </span>
+              </button>
+            </div>
+          </section>
+        )}
+
         <footer className="mt-12 text-center text-sm text-gray-500">
           <p>
             {t('lifechonicle_footer_powered_by')}{' '}
