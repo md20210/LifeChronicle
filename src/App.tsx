@@ -16,6 +16,7 @@ const COLORS = [
 
 function App() {
   const { t, language, setLanguage } = useLanguage();
+  const [llmType, setLlmType] = useState<'ollama' | 'anthropic'>('ollama');
   const [entries, setEntries] = useState<TimelineEntryType[]>([]);
   const [loading, setLoading] = useState(true);
   const [newTitle, setNewTitle] = useState('');
@@ -218,6 +219,30 @@ function App() {
                 ))}
               </div>
 
+              {/* LLM Toggle */}
+              <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
+                <button
+                  onClick={() => setLlmType('ollama')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                    llmType === 'ollama'
+                      ? 'bg-white text-teal-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  {t('lifechonicle_llm_toggle_local')}
+                </button>
+                <button
+                  onClick={() => setLlmType('anthropic')}
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
+                    llmType === 'anthropic'
+                      ? 'bg-white text-teal-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  {t('lifechonicle_llm_toggle_anthropic')}
+                </button>
+              </div>
+
               <button
                 onClick={handleExportPDF}
                 className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-md"
@@ -369,22 +394,18 @@ function App() {
 
                       {/* Entry Card */}
                       <div className={`${color.bg} ${color.border} border-2 rounded-xl p-5 shadow-md`}>
-                        {/* Title & Status */}
-                        <div className="flex justify-between items-start mb-3">
-                          <h3 className={`text-xl font-bold ${color.text}`}>
-                            {entry.title}
+                        {/* Year + Title Header */}
+                        <div className="mb-4">
+                          <h3 className={`text-2xl font-bold ${color.text} mb-1`}>
+                            {getYearFromDate(entry.date)} {entry.title}
                           </h3>
-
-                          {/* Status Badge */}
-                          <span
-                            className={`px-3 py-1 text-xs font-medium rounded-full ${
-                              entry.status === 'processed'
-                                ? 'bg-green-200 text-green-800'
-                                : 'bg-yellow-200 text-yellow-800'
-                            }`}
-                          >
-                            {entry.status === 'processed' ? t('lifechonicle_status_processed') : t('lifechonicle_status_pending')}
-                          </span>
+                          <p className="text-sm text-gray-600">
+                            {new Date(entry.date).toLocaleDateString(language === 'de' ? 'de-DE' : language === 'es' ? 'es-ES' : 'en-US', {
+                              day: '2-digit',
+                              month: 'long',
+                              year: 'numeric'
+                            })}
+                          </p>
                         </div>
 
                         {/* Entry Component */}
