@@ -15,7 +15,7 @@ export const LanguageToggle: React.FC = () => {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="flex gap-1 bg-gray-100 p-1 rounded-lg border border-gray-300 shadow-sm">
+    <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
       {LANGUAGES.map((lang) => (
         <button
           key={lang.code}

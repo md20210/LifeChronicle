@@ -211,10 +211,10 @@ function App() {
               <LanguageToggle />
 
               {/* LLM Toggle */}
-              <div className="flex gap-2 bg-gray-100 p-1 rounded-lg border border-gray-300 shadow-sm">
+              <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
                 <button
                   onClick={() => setLlmType('ollama')}
-                  className={`px-4 py-2 rounded-md font-medium text-base transition-all ${
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
                     llmType === 'ollama'
                       ? 'bg-white text-teal-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
@@ -224,7 +224,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => setLlmType('grok')}
-                  className={`px-4 py-2 rounded-md font-medium text-base transition-all ${
+                  className={`px-4 py-2 rounded-md font-medium transition-all ${
                     llmType === 'grok'
                       ? 'bg-white text-teal-600 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
