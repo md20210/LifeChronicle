@@ -11,6 +11,8 @@ const api = axios.create({
 });
 
 // Fetch demo token for testing (auto-login)
+let authInitialized: Promise<void>;
+
 const initDemoAuth = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/demo/token`);
@@ -25,17 +27,19 @@ const initDemoAuth = async () => {
 };
 
 // Initialize demo auth when module loads
-initDemoAuth();
+authInitialized = initDemoAuth();
 
 export const lifeChronicleApi = {
   // Get all timeline entries for current user
   getEntries: async (): Promise<TimelineEntry[]> => {
+    await authInitialized; // Wait for auth to complete
     const response = await api.get('/lifechronicle/entries');
     return response.data.entries;
   },
 
   // Create new timeline entry (with photos support)
   createEntry: async (data: CreateEntryRequest & { photos?: File[] }): Promise<TimelineEntry> => {
+    await authInitialized; // Wait for auth to complete
     // If photos are included, use FormData (multipart/form-data)
     if (data.photos && data.photos.length > 0) {
       const formData = new FormData();
@@ -67,17 +71,20 @@ export const lifeChronicleApi = {
 
   // Delete timeline entry
   deleteEntry: async (entryId: string): Promise<void> => {
+    await authInitialized; // Wait for auth to complete
     await api.delete(`/lifechronicle/entries/${entryId}`);
   },
 
   // Process entry with LLM (convert to book chapter)
   processEntry: async (entryId: string, provider: 'ollama' | 'grok' = 'ollama'): Promise<TimelineEntry> => {
+    await authInitialized; // Wait for auth to complete
     const response = await api.post(`/lifechronicle/entries/${entryId}/process`, { provider });
     return response.data.entry;
   },
 
   // Export timeline as PDF
   exportPDF: async (): Promise<Blob> => {
+    await authInitialized; // Wait for auth to complete
     const response = await api.get('/lifechronicle/export/pdf', {
       responseType: 'blob',
     });
