@@ -5,9 +5,7 @@ const API_BASE_URL = 'https://general-backend-production-a734.up.railway.app';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // Don't set default Content-Type - let axios choose based on request type
 });
 
 // Fetch demo token for testing (auto-login)
@@ -41,6 +39,8 @@ export const lifeChronicleApi = {
   createEntry: async (data: CreateEntryRequest & { photos?: File[] }): Promise<TimelineEntry> => {
     await authInitialized; // Wait for auth to complete
 
+    console.log('Creating entry with data:', { title: data.title, date: data.date, original_text: data.original_text, photos: data.photos?.length || 0 });
+
     // Backend expects FormData (even without photos)
     const formData = new FormData();
     formData.append('title', data.title);
@@ -54,9 +54,14 @@ export const lifeChronicleApi = {
       });
     }
 
-    // Don't manually set Content-Type - let axios add boundary automatically
-    const response = await api.post('/lifechronicle/entries', formData);
-    return response.data.entry;
+    try {
+      // Don't manually set Content-Type - let axios add boundary automatically
+      const response = await api.post('/lifechronicle/entries', formData);
+      return response.data.entry;
+    } catch (error: any) {
+      console.error('❌ 422 Validation Error Details:', error.response?.data);
+      throw error;
+    }
   },
 
   // Delete timeline entry
