@@ -13,7 +13,7 @@ const api = axios.create({
 export const lifeChronicleApi = {
   // Get all timeline entries for current user
   getEntries: async (): Promise<TimelineEntry[]> => {
-    const response = await api.get('/lifechonicle/entries');
+    const response = await api.get('/lifechronicle/entries');
     return response.data.entries;
   },
 
@@ -31,7 +31,7 @@ export const lifeChronicleApi = {
         formData.append('photos', photo);
       });
 
-      const response = await api.post('/lifechonicle/entries', formData, {
+      const response = await api.post('/lifechronicle/entries', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -39,7 +39,7 @@ export const lifeChronicleApi = {
       return response.data.entry;
     } else {
       // No photos, use JSON
-      const response = await api.post('/lifechonicle/entries', {
+      const response = await api.post('/lifechronicle/entries', {
         title: data.title,
         date: data.date,
         original_text: data.original_text,
@@ -50,18 +50,18 @@ export const lifeChronicleApi = {
 
   // Delete timeline entry
   deleteEntry: async (entryId: string): Promise<void> => {
-    await api.delete(`/lifechonicle/entries/${entryId}`);
+    await api.delete(`/lifechronicle/entries/${entryId}`);
   },
 
   // Process entry with LLM (convert to book chapter)
   processEntry: async (entryId: string, provider: 'ollama' | 'grok' = 'ollama'): Promise<TimelineEntry> => {
-    const response = await api.post(`/lifechonicle/entries/${entryId}/process`, { provider });
+    const response = await api.post(`/lifechronicle/entries/${entryId}/process`, { provider });
     return response.data.entry;
   },
 
   // Export timeline as PDF
   exportPDF: async (): Promise<Blob> => {
-    const response = await api.get('/lifechonicle/export/pdf', {
+    const response = await api.get('/lifechronicle/export/pdf', {
       responseType: 'blob',
     });
     return response.data;
