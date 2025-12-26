@@ -92,6 +92,21 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, formattedDate, col
       <p className="text-gray-700 leading-relaxed">
         {displayText}
       </p>
+
+      {/* Photos (if available) */}
+      {entry.photo_urls && entry.photo_urls.length > 0 && (
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          {entry.photo_urls.map((url, index) => (
+            <img
+              key={index}
+              src={`https://general-backend-production-a734.up.railway.app${url}`}
+              alt={`Photo ${index + 1} for ${entry.title}`}
+              className="w-full h-48 object-cover rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+              loading="lazy"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
