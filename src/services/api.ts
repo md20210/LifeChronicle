@@ -17,10 +17,35 @@ export const lifeChronicleApi = {
     return response.data.entries;
   },
 
-  // Create new timeline entry
-  createEntry: async (data: CreateEntryRequest): Promise<TimelineEntry> => {
-    const response = await api.post('/lifechonicle/entries', data);
-    return response.data.entry;
+  // Create new timeline entry (with photos support)
+  createEntry: async (data: CreateEntryRequest & { photos?: File[] }): Promise<TimelineEntry> => {
+    // If photos are included, use FormData (multipart/form-data)
+    if (data.photos && data.photos.length > 0) {
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('date', data.date);
+      formData.append('text', data.original_text);
+
+      // Append each photo
+      data.photos.forEach((photo) => {
+        formData.append('photos', photo);
+      });
+
+      const response = await api.post('/lifechonicle/entries', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data.entry;
+    } else {
+      // No photos, use JSON
+      const response = await api.post('/lifechonicle/entries', {
+        title: data.title,
+        date: data.date,
+        original_text: data.original_text,
+      });
+      return response.data.entry;
+    }
   },
 
   // Delete timeline entry

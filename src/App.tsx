@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import TimelineEntry from './components/TimelineEntry';
 import { LanguageToggle } from './components/LanguageToggle';
+import EntryModal, { type NewEntry } from './components/EntryModal';
 import { lifeChronicleApi } from './services/api';
 import type { TimelineEntry as TimelineEntryType } from './types';
 import { useLanguage } from './contexts/LanguageContext';
@@ -20,11 +21,7 @@ function App() {
   const [llmType, setLlmType] = useState<'ollama' | 'grok'>('ollama');
   const [entries, setEntries] = useState<TimelineEntryType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newTitle, setNewTitle] = useState('');
-  const [newDate, setNewDate] = useState('');
-  const [newText, setNewText] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,34 +44,18 @@ function App() {
     }
   };
 
-  const handleCreate = async () => {
-    if (!newTitle.trim()) {
-      alert(t('lifechonicle_alert_title_required'));
-      return;
-    }
-    if (!newDate) {
-      alert(t('lifechonicle_alert_date_required'));
-      return;
-    }
-    if (!newText.trim()) {
-      alert(t('lifechonicle_alert_story_required'));
-      return;
-    }
-
+  const handleSaveEntry = async (entry: NewEntry) => {
     try {
       await lifeChronicleApi.createEntry({
-        title: newTitle.trim(),
-        date: newDate,
-        original_text: newText.trim(),
+        title: entry.title,
+        date: entry.date,
+        original_text: entry.original_text,
+        photos: entry.photos,
       });
-      setNewTitle('');
-      setNewDate('');
-      setNewText('');
-      setShowAddForm(false);
-      loadEntries();
+      await loadEntries();
     } catch (error) {
       console.error('Failed to create entry:', error);
-      alert(t('lifechonicle_alert_create_error'));
+      throw error; // Re-throw so EntryModal can handle it
     }
   };
 
@@ -104,50 +85,6 @@ function App() {
     }
   };
 
-  // Speech recognition for text input
-  const handleVoiceInput = () => {
-    if (!newTitle.trim()) {
-      alert(t('lifechonicle_alert_title_first'));
-      return;
-    }
-    if (!newDate) {
-      alert(t('lifechonicle_alert_date_first'));
-      return;
-    }
-
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert(t('lifechonicle_alert_voice_unsupported'));
-      return;
-    }
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'de-DE';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onstart = () => {
-      setIsRecording(true);
-    };
-
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setNewText((prev) => prev + (prev ? ' ' : '') + transcript);
-      setIsRecording(false);
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error('Speech recognition error:', event.error);
-      alert(t('lifechonicle_alert_voice_error', { error: event.error }));
-      setIsRecording(false);
-    };
-
-    recognition.onend = () => {
-      setIsRecording(false);
-    };
-
-    recognition.start();
-  };
 
   // Extract year from date string
   const getYearFromDate = (dateStr: string): string => {
@@ -230,104 +167,19 @@ function App() {
         {/* Add Entry Button - Left aligned */}
         <div className="mb-8">
           <button
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={() => setShowModal(true)}
             className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition-all shadow-sm"
           >
             ➕ {t('lifechonicle_btn_new_entry')}
           </button>
         </div>
 
-        {/* Add Entry Form */}
-        {showAddForm && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              {t('lifechonicle_form_title')}
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('lifechonicle_form_headline_label')}
-                </label>
-                <input
-                  type="text"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder={t('lifechonicle_form_headline_placeholder')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('lifechonicle_form_date_label')}
-                </label>
-                <input
-                  type="date"
-                  value={newDate}
-                  onChange={(e) => setNewDate(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('lifechonicle_form_story_label')}
-                </label>
-                <div className="relative">
-                  <textarea
-                    value={newText}
-                    onChange={(e) => setNewText(e.target.value)}
-                    placeholder={t('lifechonicle_form_story_placeholder')}
-                    rows={6}
-                    className="w-full px-4 py-2 pr-14 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleVoiceInput}
-                    disabled={isRecording}
-                    className={`absolute bottom-3 right-3 p-2 rounded-lg transition-all ${
-                      isRecording
-                        ? 'bg-red-500 text-white animate-pulse'
-                        : 'bg-teal-500 text-white hover:bg-teal-600'
-                    }`}
-                    title={isRecording ? t('lifechonicle_voice_recording') : t('lifechonicle_voice_start')}
-                  >
-                    {isRecording ? '🔴' : '🎤'}
-                  </button>
-                </div>
-                {isRecording && (
-                  <p className="text-sm text-red-600 mt-1 animate-pulse">
-                    🎤 {t('lifechonicle_voice_recording_hint')}
-                  </p>
-                )}
-                <p className="text-xs text-gray-500 mt-1">
-                  💡 {t('lifechonicle_voice_tip')}
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={handleCreate}
-                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all shadow-sm"
-                >
-                  ✅ {t('lifechonicle_btn_save')}
-                </button>
-                <button
-                  onClick={() => {
-                    setShowAddForm(false);
-                    setNewTitle('');
-                    setNewDate('');
-                    setNewText('');
-                  }}
-                  className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition-all shadow-sm"
-                >
-                  ❌ {t('lifechonicle_btn_cancel')}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Entry Modal */}
+        <EntryModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSave={handleSaveEntry}
+        />
 
         {/* Timeline */}
         <div>
