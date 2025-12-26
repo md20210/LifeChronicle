@@ -76,7 +76,7 @@ export default function PhotoUpload({ photos, onChange, disabled = false }: Phot
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label className="block text-base font-semibold text-gray-800 mb-3">
         📷 Fotos (optional, max. {MAX_PHOTOS})
       </label>
 
@@ -86,10 +86,10 @@ export default function PhotoUpload({ photos, onChange, disabled = false }: Phot
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${
+        className={`border-2 border-dashed rounded-lg p-6 text-center transition-all ${
           dragActive
             ? 'border-teal-500 bg-teal-50'
-            : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
+            : 'border-gray-300 bg-white hover:bg-gray-50'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         {photos.length === 0 ? (
@@ -139,18 +139,18 @@ export default function PhotoUpload({ photos, onChange, disabled = false }: Phot
         />
       </div>
 
-      {/* Photo Previews Grid */}
+      {/* Photo Previews Grid - Kleinere Thumbnails */}
       {photos.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-4">
+        <div className="grid grid-cols-4 gap-3 mt-4">
           {photos.map((photo, index) => (
-            <div key={index} className="relative aspect-square group">
+            <div key={index} className="relative group">
               <img
                 src={URL.createObjectURL(photo)}
                 alt={`Photo ${index + 1}`}
-                className="w-full h-full object-cover rounded-lg shadow-md"
+                className="w-full h-20 object-cover rounded-lg shadow-md border-2 border-gray-200"
               />
               {/* File info overlay */}
-              <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-[10px] p-0.5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity text-center">
                 {(photo.size / 1024 / 1024).toFixed(1)} MB
               </div>
               {/* Remove button */}
@@ -158,10 +158,10 @@ export default function PhotoUpload({ photos, onChange, disabled = false }: Phot
                 type="button"
                 onClick={() => !disabled && removePhoto(index)}
                 disabled={disabled}
-                className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute -top-1 -right-1 p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Foto entfernen"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3 h-3" />
               </button>
             </div>
           ))}

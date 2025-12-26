@@ -156,24 +156,24 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex justify-between items-center p-6 border-b border-gray-200 sticky top-0 bg-white rounded-t-xl z-10">
-            <h2 className="text-2xl font-bold text-gray-800">
+          <div className="flex justify-between items-center p-8 border-b-2 border-gray-300 sticky top-0 bg-white rounded-t-xl z-10 shadow-sm">
+            <h2 className="text-3xl font-bold text-teal-700">
               {t('lifechonicle_form_title')}
             </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-3 hover:bg-gray-100 rounded-lg transition-colors"
               disabled={loading}
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-6 h-6 text-gray-600" />
             </button>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="p-8 space-y-8 bg-gray-50">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-semibold text-gray-800 mb-3">
                 {t('lifechonicle_form_headline_label')} *
               </label>
               <input
@@ -181,7 +181,7 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={t('lifechonicle_form_headline_placeholder')}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                className="w-full px-5 py-4 text-lg bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
                 required
                 disabled={loading}
               />
@@ -189,7 +189,7 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
 
             {/* Date */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-semibold text-gray-800 mb-3">
                 {t('lifechonicle_form_date_label')} *
               </label>
               <input
@@ -197,7 +197,7 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 max={new Date().toISOString().split('T')[0]} // No future dates
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                className="w-full px-5 py-4 text-lg bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
                 required
                 disabled={loading}
               />
@@ -205,7 +205,7 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
 
             {/* Text with Voice Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-base font-semibold text-gray-800 mb-3">
                 {t('lifechonicle_form_story_label')} *
               </label>
               <div className="relative">
@@ -214,7 +214,7 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
                   onChange={(e) => setText(e.target.value)}
                   placeholder={t('lifechonicle_form_story_placeholder')}
                   rows={8}
-                  className="w-full px-4 py-3 pr-14 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                  className="w-full px-5 py-4 pr-16 text-lg bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none transition-all"
                   required
                   disabled={loading}
                 />
@@ -246,18 +246,18 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
             <PhotoUpload photos={photos} onChange={setPhotos} disabled={loading} />
 
             {/* Buttons */}
-            <div className="flex gap-3 pt-4 border-t border-gray-200">
+            <div className="flex gap-4 pt-6">
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition-all shadow-sm"
+                className="px-8 py-4 text-lg bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 font-semibold transition-all shadow-sm"
                 disabled={loading}
               >
                 ❌ {t('lifechonicle_btn_cancel')}
               </button>
               <button
                 type="submit"
-                className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-8 py-4 text-lg bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={loading || !title.trim() || !date || !text.trim()}
               >
                 {loading ? '⏳ ' + t('lifechonicle_saving') : '✅ ' + t('lifechonicle_btn_save')}
