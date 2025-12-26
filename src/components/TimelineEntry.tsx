@@ -16,11 +16,11 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, formattedDate, col
   const { t } = useLanguage();
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  // Get year from date
-  const year = new Date(entry.date).getFullYear();
+  // Get year from entry_date
+  const year = new Date(entry.entry_date).getFullYear();
 
-  // Display processed text if available, otherwise original
-  const displayText = entry.processed_text || entry.original_text;
+  // Display refined text if available, otherwise original
+  const displayText = entry.refined_text || entry.original_text;
 
   const handleSpeak = () => {
     if (isSpeaking) {
@@ -59,7 +59,7 @@ const TimelineEntry: React.FC<TimelineEntryProps> = ({ entry, formattedDate, col
             {isSpeaking ? '⏸️' : '🔊'}
           </button>
 
-          {entry.status === 'pending' && (
+          {!entry.is_refined && (
             <button
               onClick={() => onProcess(entry.id)}
               disabled={isProcessing}

@@ -32,9 +32,9 @@ function App() {
     try {
       setLoading(true);
       const data = await lifeChronicleApi.getEntries();
-      // Sort by date (newest first)
+      // Sort by entry_date (newest first)
       const sorted = data.sort((a, b) =>
-        new Date(b.date).getTime() - new Date(a.date).getTime()
+        new Date(b.entry_date).getTime() - new Date(a.entry_date).getTime()
       );
       setEntries(sorted);
     } catch (error) {
@@ -220,7 +220,7 @@ function App() {
                   const isLeft = index % 2 === 0;
 
                   // Format date for display (e.g., "Juni 1985")
-                  const formattedDate = new Date(entry.date).toLocaleDateString(
+                  const formattedDate = new Date(entry.entry_date).toLocaleDateString(
                     language === 'de' ? 'de-DE' : language === 'es' ? 'es-ES' : 'en-US',
                     { month: 'long', year: 'numeric' }
                   );
@@ -243,7 +243,7 @@ function App() {
                           border: '4px solid white'
                         }}
                       >
-                        {getYearFromDate(entry.date)}
+                        {getYearFromDate(entry.entry_date)}
                       </div>
 
                       {/* Entry Card - Left or Right */}
