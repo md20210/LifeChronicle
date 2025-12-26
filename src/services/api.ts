@@ -10,6 +10,23 @@ const api = axios.create({
   },
 });
 
+// Fetch demo token for testing (auto-login)
+const initDemoAuth = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/demo/token`);
+    const token = response.data.access_token;
+
+    // Set token as default Authorization header
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    console.log('✅ Demo authentication initialized');
+  } catch (error) {
+    console.error('❌ Failed to initialize demo auth:', error);
+  }
+};
+
+// Initialize demo auth when module loads
+initDemoAuth();
+
 export const lifeChronicleApi = {
   // Get all timeline entries for current user
   getEntries: async (): Promise<TimelineEntry[]> => {
