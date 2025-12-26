@@ -54,11 +54,8 @@ export const lifeChronicleApi = {
       });
     }
 
-    const response = await api.post('/lifechronicle/entries', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    // Don't manually set Content-Type - let axios add boundary automatically
+    const response = await api.post('/lifechronicle/entries', formData);
     return response.data.entry;
   },
 
