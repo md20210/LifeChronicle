@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Calendar, Type, FileText, Mic, MicOff, Save } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import PhotoUpload from './PhotoUpload';
 
@@ -25,7 +25,6 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
 
-  // Handle ESC key to close modal
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -35,7 +34,6 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
-      // Prevent body scroll when modal is open
       document.body.style.overflow = 'hidden';
     }
 
@@ -45,7 +43,6 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
     };
   }, [isOpen, onClose]);
 
-  // Speech recognition for text input
   const handleVoiceInput = () => {
     if (!title.trim()) {
       alert(t('lifechonicle_alert_title_first'));
@@ -67,33 +64,24 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
     recognition.continuous = false;
     recognition.interimResults = false;
 
-    recognition.onstart = () => {
-      setIsRecording(true);
-    };
-
+    recognition.onstart = () => setIsRecording(true);
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setText((prev) => prev + (prev ? ' ' : '') + transcript);
       setIsRecording(false);
     };
-
     recognition.onerror = (event: any) => {
       console.error('Speech recognition error:', event.error);
       alert(t('lifechonicle_alert_voice_error', { error: event.error }));
       setIsRecording(false);
     };
-
-    recognition.onend = () => {
-      setIsRecording(false);
-    };
-
+    recognition.onend = () => setIsRecording(false);
     recognition.start();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation
     if (!title.trim()) {
       alert(t('lifechonicle_alert_title_required'));
       return;
@@ -116,7 +104,6 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
         photos,
       });
 
-      // Reset form
       setTitle('');
       setDate('');
       setText('');
@@ -131,7 +118,6 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
   };
 
   const handleCancel = () => {
-    // Reset form
     setTitle('');
     setDate('');
     setText('');
@@ -142,162 +128,151 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
   if (!isOpen) return null;
 
   return (
-    <>
-      {/* Backdrop - Dark overlay with blur */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity animate-fadeIn"
+        className="absolute inset-0 bg-black/50"
         onClick={onClose}
-        style={{ backdropFilter: 'blur(4px)' }}
-      ></div>
+      />
 
-      {/* Modal Container - Centered with padding */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-        <div
-          className="bg-white rounded-2xl w-full max-w-2xl max-h-[95vh] overflow-hidden shadow-2xl transform transition-all animate-slideUp"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header - Compact & Sticky */}
-          <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-teal-50 to-emerald-50 sticky top-0 z-10">
-            <h2 className="text-2xl font-bold text-teal-700 flex items-center gap-2">
-              <span className="text-2xl">✍️</span>
+      {/* Modal */}
+      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-teal-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">
               {t('lifechonicle_form_title')}
             </h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-white/70 rounded-lg transition-colors group"
-              disabled={loading}
-              title="Schließen (ESC)"
-            >
-              <X className="w-5 h-5 text-gray-600 group-hover:text-gray-800" />
-            </button>
           </div>
+          <button
+            onClick={onClose}
+            disabled={loading}
+            className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
+          >
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
 
-          {/* Form - Scrollable content */}
-          <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(95vh-80px)]">
-            <div className="px-6 py-5 space-y-5">
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t('lifechonicle_form_headline_label')} <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder={t('lifechonicle_form_headline_placeholder')}
-                  className="w-full px-4 py-3 text-base bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
-                  required
-                  disabled={loading}
-                  autoFocus
-                />
-              </div>
-
-              {/* Date */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t('lifechonicle_form_date_label')} <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  max={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 text-base bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              {/* Text with Voice Input */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t('lifechonicle_form_story_label')} <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <textarea
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder={t('lifechonicle_form_story_placeholder')}
-                    rows={6}
-                    className="w-full px-4 py-3 pr-14 text-base bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none transition-all"
-                    required
-                    disabled={loading}
-                  />
-                  <button
-                    type="button"
-                    onClick={handleVoiceInput}
-                    disabled={isRecording || loading}
-                    className={`absolute bottom-2 right-2 p-2.5 rounded-lg transition-all shadow-sm ${
-                      isRecording
-                        ? 'bg-red-500 text-white animate-pulse'
-                        : 'bg-teal-500 text-white hover:bg-teal-600'
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                    title={isRecording ? t('lifechonicle_voice_recording') : t('lifechonicle_voice_start')}
-                  >
-                    <span className="text-base">{isRecording ? '🔴' : '🎤'}</span>
-                  </button>
-                </div>
-                {isRecording && (
-                  <p className="text-xs text-red-600 mt-1.5 animate-pulse font-medium">
-                    🎤 {t('lifechonicle_voice_recording_hint')}
-                  </p>
-                )}
-                <p className="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
-                  <span>💡</span> {t('lifechonicle_voice_tip')}
-                </p>
-              </div>
-
-              {/* Photo Upload */}
-              <PhotoUpload photos={photos} onChange={setPhotos} disabled={loading} />
+        {/* Form Content - Scrollable */}
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+          <div className="px-6 py-6 space-y-6">
+            {/* Title Input */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <Type className="w-4 h-4" />
+                {t('lifechonicle_form_headline_label')}
+                <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={t('lifechonicle_form_headline_placeholder')}
+                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-shadow"
+                required
+                disabled={loading}
+                autoFocus
+              />
             </div>
 
-            {/* Buttons - Sticky Footer */}
-            <div className="sticky bottom-0 bg-gradient-to-t from-gray-50 to-white border-t border-gray-200 px-6 py-4">
-              <div className="flex gap-3">
+            {/* Date Input */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <Calendar className="w-4 h-4" />
+                {t('lifechonicle_form_date_label')}
+                <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                max={new Date().toISOString().split('T')[0]}
+                className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-shadow"
+                required
+                disabled={loading}
+              />
+            </div>
+
+            {/* Text Input with Voice */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <FileText className="w-4 h-4" />
+                {t('lifechonicle_form_story_label')}
+                <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder={t('lifechonicle_form_story_placeholder')}
+                  rows={5}
+                  className="w-full px-4 py-2.5 pr-12 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none transition-shadow"
+                  required
+                  disabled={loading}
+                />
                 <button
                   type="button"
-                  onClick={handleCancel}
-                  className="px-6 py-3 text-base bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-all shadow-sm hover:shadow"
-                  disabled={loading}
+                  onClick={handleVoiceInput}
+                  disabled={isRecording || loading}
+                  className={`absolute bottom-2 right-2 w-9 h-9 rounded-md flex items-center justify-center transition-all ${
+                    isRecording
+                      ? 'bg-red-500 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  } disabled:opacity-50`}
+                  title={isRecording ? t('lifechonicle_voice_recording') : t('lifechonicle_voice_start')}
                 >
-                  ❌ {t('lifechonicle_btn_cancel')}
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-6 py-3 text-base bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg hover:from-teal-700 hover:to-emerald-700 font-semibold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-md"
-                  disabled={loading || !title.trim() || !date || !text.trim()}
-                >
-                  {loading ? '⏳ ' + t('lifechonicle_saving') : '✅ ' + t('lifechonicle_btn_save')}
+                  {isRecording ? (
+                    <MicOff className="w-4 h-4" />
+                  ) : (
+                    <Mic className="w-4 h-4" />
+                  )}
                 </button>
               </div>
+              {isRecording && (
+                <p className="text-xs text-red-600 flex items-center gap-1">
+                  <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
+                  {t('lifechonicle_voice_recording_hint')}
+                </p>
+              )}
             </div>
-          </form>
-        </div>
-      </div>
 
-      {/* Animation styles */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out;
-        }
-        .animate-slideUp {
-          animation: slideUp 0.3s ease-out;
-        }
-      `}</style>
-    </>
+            {/* Photo Upload */}
+            <PhotoUpload photos={photos} onChange={setPhotos} disabled={loading} />
+          </div>
+
+          {/* Footer Buttons */}
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={handleCancel}
+              disabled={loading}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors disabled:opacity-50"
+            >
+              {t('lifechonicle_btn_cancel')}
+            </button>
+            <button
+              type="submit"
+              disabled={loading || !title.trim() || !date || !text.trim()}
+              className="px-4 py-2 text-sm font-medium text-white bg-teal-600 border border-transparent rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  {t('lifechonicle_saving')}
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  {t('lifechonicle_btn_save')}
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
