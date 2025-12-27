@@ -143,129 +143,161 @@ export default function EntryModal({ isOpen, onClose, onSave }: EntryModalProps)
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Backdrop - Dark overlay with blur */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity animate-fadeIn"
         onClick={onClose}
+        style={{ backdropFilter: 'blur(4px)' }}
       ></div>
 
-      {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+      {/* Modal Container - Centered with padding */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
         <div
-          className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl pointer-events-auto"
+          className="bg-white rounded-2xl w-full max-w-2xl max-h-[95vh] overflow-hidden shadow-2xl transform transition-all animate-slideUp"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex justify-between items-center p-8 border-b-2 border-gray-300 sticky top-0 bg-white rounded-t-xl z-10 shadow-sm">
-            <h2 className="text-3xl font-bold text-teal-700">
+          {/* Header - Compact & Sticky */}
+          <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-teal-50 to-emerald-50 sticky top-0 z-10">
+            <h2 className="text-2xl font-bold text-teal-700 flex items-center gap-2">
+              <span className="text-2xl">✍️</span>
               {t('lifechonicle_form_title')}
             </h2>
             <button
               onClick={onClose}
-              className="p-3 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/70 rounded-lg transition-colors group"
               disabled={loading}
+              title="Schließen (ESC)"
             >
-              <X className="w-6 h-6 text-gray-600" />
+              <X className="w-5 h-5 text-gray-600 group-hover:text-gray-800" />
             </button>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="p-8 space-y-8 bg-gray-50">
-            {/* Title */}
-            <div>
-              <label className="block text-base font-semibold text-gray-800 mb-3">
-                {t('lifechonicle_form_headline_label')} *
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={t('lifechonicle_form_headline_placeholder')}
-                className="w-full px-5 py-4 text-lg bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
-                required
-                disabled={loading}
-              />
-            </div>
+          {/* Form - Scrollable content */}
+          <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(95vh-80px)]">
+            <div className="px-6 py-5 space-y-5">
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t('lifechonicle_form_headline_label')} <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder={t('lifechonicle_form_headline_placeholder')}
+                  className="w-full px-4 py-3 text-base bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
+                  required
+                  disabled={loading}
+                  autoFocus
+                />
+              </div>
 
-            {/* Date */}
-            <div>
-              <label className="block text-base font-semibold text-gray-800 mb-3">
-                {t('lifechonicle_form_date_label')} *
-              </label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                max={new Date().toISOString().split('T')[0]} // No future dates
-                className="w-full px-5 py-4 text-lg bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            {/* Text with Voice Input */}
-            <div>
-              <label className="block text-base font-semibold text-gray-800 mb-3">
-                {t('lifechonicle_form_story_label')} *
-              </label>
-              <div className="relative">
-                <textarea
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  placeholder={t('lifechonicle_form_story_placeholder')}
-                  rows={8}
-                  className="w-full px-5 py-4 pr-16 text-lg bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none transition-all"
+              {/* Date */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t('lifechonicle_form_date_label')} <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  max={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-3 text-base bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
                   required
                   disabled={loading}
                 />
-                <button
-                  type="button"
-                  onClick={handleVoiceInput}
-                  disabled={isRecording || loading}
-                  className={`absolute bottom-3 right-3 p-2 rounded-lg transition-all ${
-                    isRecording
-                      ? 'bg-red-500 text-white animate-pulse'
-                      : 'bg-teal-500 text-white hover:bg-teal-600'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                  title={isRecording ? t('lifechonicle_voice_recording') : t('lifechonicle_voice_start')}
-                >
-                  {isRecording ? '🔴' : '🎤'}
-                </button>
               </div>
-              {isRecording && (
-                <p className="text-sm text-red-600 mt-2 animate-pulse">
-                  🎤 {t('lifechonicle_voice_recording_hint')}
+
+              {/* Text with Voice Input */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  {t('lifechonicle_form_story_label')} <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder={t('lifechonicle_form_story_placeholder')}
+                    rows={6}
+                    className="w-full px-4 py-3 pr-14 text-base bg-white border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none transition-all"
+                    required
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleVoiceInput}
+                    disabled={isRecording || loading}
+                    className={`absolute bottom-2 right-2 p-2.5 rounded-lg transition-all shadow-sm ${
+                      isRecording
+                        ? 'bg-red-500 text-white animate-pulse'
+                        : 'bg-teal-500 text-white hover:bg-teal-600'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    title={isRecording ? t('lifechonicle_voice_recording') : t('lifechonicle_voice_start')}
+                  >
+                    <span className="text-base">{isRecording ? '🔴' : '🎤'}</span>
+                  </button>
+                </div>
+                {isRecording && (
+                  <p className="text-xs text-red-600 mt-1.5 animate-pulse font-medium">
+                    🎤 {t('lifechonicle_voice_recording_hint')}
+                  </p>
+                )}
+                <p className="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
+                  <span>💡</span> {t('lifechonicle_voice_tip')}
                 </p>
-              )}
-              <p className="text-xs text-gray-500 mt-1">
-                💡 {t('lifechonicle_voice_tip')}
-              </p>
+              </div>
+
+              {/* Photo Upload */}
+              <PhotoUpload photos={photos} onChange={setPhotos} disabled={loading} />
             </div>
 
-            {/* Photo Upload */}
-            <PhotoUpload photos={photos} onChange={setPhotos} disabled={loading} />
-
-            {/* Buttons */}
-            <div className="flex gap-4 pt-6">
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="px-8 py-4 text-lg bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 font-semibold transition-all shadow-sm"
-                disabled={loading}
-              >
-                ❌ {t('lifechonicle_btn_cancel')}
-              </button>
-              <button
-                type="submit"
-                className="flex-1 px-8 py-4 text-lg bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading || !title.trim() || !date || !text.trim()}
-              >
-                {loading ? '⏳ ' + t('lifechonicle_saving') : '✅ ' + t('lifechonicle_btn_save')}
-              </button>
+            {/* Buttons - Sticky Footer */}
+            <div className="sticky bottom-0 bg-gradient-to-t from-gray-50 to-white border-t border-gray-200 px-6 py-4">
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="px-6 py-3 text-base bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-all shadow-sm hover:shadow"
+                  disabled={loading}
+                >
+                  ❌ {t('lifechonicle_btn_cancel')}
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-6 py-3 text-base bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-lg hover:from-teal-700 hover:to-emerald-700 font-semibold transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-md"
+                  disabled={loading || !title.trim() || !date || !text.trim()}
+                >
+                  {loading ? '⏳ ' + t('lifechonicle_saving') : '✅ ' + t('lifechonicle_btn_save')}
+                </button>
+              </div>
             </div>
           </form>
         </div>
       </div>
+
+      {/* Animation styles */}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.2s ease-out;
+        }
+        .animate-slideUp {
+          animation: slideUp 0.3s ease-out;
+        }
+      `}</style>
     </>
   );
 }
